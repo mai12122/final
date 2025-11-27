@@ -42,12 +42,16 @@ During development, AI tools (e.g., LLMs like Claude, GitHub Copilot) were used 
 
 ---
 
-### 4. Notifications Center
+### 4. Assignment
 ![alt text](image-1.png)
-> Timestamped notifications with status badges (“NEW”, “READ”), and test/push token utilities.
+
 
 ---
 
+### 4. Notification
+![alt text](image-6.png)
+
+> Timestamped notifications with status badges (“NEW”, “READ”), and test/push token utilities.
 ## Notifications
 - Local notifications are stored in `AsyncStorage` under the key `local_notifications_v1` and rendered in `app/(tabs)/notifications.jsx`.
 - When a student joins a class or a quiz the app:
