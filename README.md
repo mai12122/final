@@ -42,7 +42,7 @@ During development, AI tools (e.g., LLMs like Claude, GitHub Copilot) were used 
 ---
 
 ### 4. Notifications Center
-![Notifications Screen](https://i.imgur.com/7KdVwPj.png)
+![Notifications Screen](![alt text](image.png))
 > Timestamped notifications with status badges (“NEW”, “READ”), and test/push token utilities.
 
 ---
