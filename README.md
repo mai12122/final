@@ -24,25 +24,26 @@ During development, AI tools (e.g., LLMs like Claude, GitHub Copilot) were used 
 ## App Screenshots
 
 ### 1. Login / Sign Up Screen
-![Login Screen](https://i.imgur.com/3vQkz9L.png)
+![alt text](image-4.png)
+![alt text](image-5.png)
 > Student/Lecturer role selection, credential input, and account creation flow.
 
 ---
 
 ### 2. Home Dashboard
-![Home Screen](https://i.imgur.com/5FqGpXm.png)
+![alt text](image-3.png)
 > Personalized greeting, streak & avg stats, quick join buttons, and enrolled classes/quizzes list.
 
 ---
 
 ### 3. Profile Page
-![Profile Screen](https://i.imgur.com/8rHJZfW.png)
+![alt text](image-2.png)
 > User info display, edit option, and sign-out button.
 
 ---
 
 ### 4. Notifications Center
-![Notifications Screen](![alt text](image.png))
+![alt text](image-1.png)
 > Timestamped notifications with status badges (“NEW”, “READ”), and test/push token utilities.
 
 ---
