@@ -10,7 +10,7 @@ const ProfilePage = () => {
     const router = useRouter()
 
     const [profile, setProfile] = useState({
-        // Initial state is set to default/placeholder, but useEffect will overwrite it
+        
         firstName: "Kim",
         lastName: "Yong Bok",
         email: "kimyongbok@example.com",

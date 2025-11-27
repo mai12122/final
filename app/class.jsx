@@ -1,7 +1,8 @@
-import { View, Text, SafeAreaView, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { findClassByCode } from '../constants/Data';
+import { leaveClass } from '../utils/storage';
 import React, { useState } from 'react';
 
 export default function ClassDetailScreen() {
@@ -26,76 +27,17 @@ export default function ClassDetailScreen() {
       </SafeAreaView>
     );
   }
-  const content = {
-    overview: (
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>What will I learn?</Text>
-        <Text style={styles.description}>
-          This course offers a solid foundation in {classData.name.split(':')[1]?.trim() || 'this subject'}.
-          You'll gain work-ready skills through lectures, coding exercises, and real-world projects.
-          Taught by {classData.lecturer}.
-        </Text>
-      </View>
-    ),
-    lectures: (
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Lectures</Text>
-        <View style={styles.lectureItem}>
-          <Ionicons name="play-circle-outline" size={20} color="#3b82f6" />
-          <View style={styles.lectureInfo}>
-            <Text style={styles.lectureTitle}>Introduction to Algorithms</Text>
-            <Text style={styles.lectureMeta}>12 min • Watched</Text>
-          </View>
-        </View>
-        <View style={styles.lectureItem}>
-          <Ionicons name="play-circle-outline" size={20} color="#94a3b8" />
-          <View style={styles.lectureInfo}>
-            <Text style={styles.lectureTitle}>Time Complexity Analysis</Text>
-            <Text style={styles.lectureMeta}>18 min • Not started</Text>
-          </View>
-        </View>
-        <View style={styles.lectureItem}>
-          <Ionicons name="play-circle-outline" size={20} color="#94a3b8" />
-          <View style={styles.lectureInfo}>
-            <Text style={styles.lectureTitle}>Sorting Algorithms</Text>
-            <Text style={styles.lectureMeta}>25 min • Not started</Text>
-          </View>
-        </View>
-      </View>
-    ),
-    assignments: (
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Assignments</Text>
-        <View style={styles.assignmentItem}>
-          <View style={[styles.assignmentStatus, { backgroundColor: '#dcfce7' }]}>
-            <Ionicons name="checkmark-circle" size={16} color="#16a34a" />
-          </View>
-          <View style={styles.assignmentInfo}>
-            <Text style={styles.assignmentTitle}>Homework 1: Big-O Practice</Text>
-            <Text style={styles.assignmentMeta}>Due today • Submitted</Text>
-          </View>
-        </View>
-        <View style={styles.assignmentItem}>
-          <View style={[styles.assignmentStatus, { backgroundColor: '#ffedd5' }]}>
-            <Ionicons name="time-outline" size={16} color="#ea580c" />
-          </View>
-          <View style={styles.assignmentInfo}>
-            <Text style={styles.assignmentTitle}>Quiz 1: Algorithm Basics</Text>
-            <Text style={styles.assignmentMeta}>Due in 2 days • Pending</Text>
-          </View>
-        </View>
-        <View style={styles.assignmentItem}>
-          <View style={[styles.assignmentStatus, { backgroundColor: '#e0e7ff' }]}>
-            <Ionicons name="document-text-outline" size={16} color="#4f46e5" />
-          </View>
-          <View style={styles.assignmentInfo}>
-            <Text style={styles.assignmentTitle}>Project: Sorting Visualizer</Text>
-            <Text style={styles.assignmentMeta}>Due in 1 week • Not started</Text>
-          </View>
-        </View>
-      </View>
-    ),
-  };
+  const mockLectures = [
+    { id: 'l1', title: 'Introduction to Algorithms', meta: '12 min • Watched' },
+    { id: 'l2', title: 'Time Complexity Analysis', meta: '18 min • Not started' },
+    { id: 'l3', title: 'Sorting Algorithms', meta: '25 min • Not started' },
+  ];
+
+  const mockAssignments = [
+    { id: 'a1', title: 'Homework 1: Big-O Practice', due: 'Today', status: 'Submitted', color: '#16a34a' },
+    { id: 'a2', title: 'Quiz 1: Algorithm Basics', due: 'In 2 days', status: 'Pending', color: '#ea580c' },
+    { id: 'a3', title: 'Project: Sorting Visualizer', due: 'In 1 week', status: 'Not started', color: '#4f46e5' },
+  ];
 
   return (
     <SafeAreaView style={styles.container}>
@@ -104,8 +46,42 @@ export default function ClassDetailScreen() {
           <Text style={styles.heroText}>🎓</Text>
         </View>
         <View style={styles.header}>
-          <Text style={styles.title}>{classData.name}</Text>
-          <Text style={styles.subtitle}>by {classData.lecturer}</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.title}>{classData.name}</Text>
+            <Text style={styles.subtitle}>by {classData.lecturer}</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.leaveBtn}
+            onPress={() => {
+              Alert.alert(
+                'Leave class',
+                'Are you sure you want to leave this class?',
+                [
+                  { text: 'Cancel', style: 'cancel' },
+                  {
+                    text: 'Leave',
+                    style: 'destructive',
+                    onPress: async () => {
+                      try {
+                        const ok = await leaveClass(classCode);
+                        if (ok) {
+                          Alert.alert('Left', 'You have left the class');
+                          router.push('/');
+                        } else {
+                          Alert.alert('Error', 'Could not leave the class');
+                        }
+                      } catch (e) {
+                        console.warn('leaveClass', e);
+                        Alert.alert('Error', 'Unexpected error');
+                      }
+                    },
+                  },
+                ]
+              );
+            }}
+          >
+            <Text style={styles.leaveTxt}>Leave</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.tabs}>
           {['overview', 'lectures', 'assignments'].map((tab) => (
@@ -120,12 +96,62 @@ export default function ClassDetailScreen() {
             </TouchableOpacity>
           ))}
         </View>
-        {content[activeTab]}
+        {/* render active content */}
+        {activeTab === 'overview' && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>What will I learn?</Text>
+            <Text style={styles.description}>
+              This course offers a solid foundation in {classData.name.split(':')[1]?.trim() || 'this subject'}.
+              You'll get lectures, exercises and projects. Taught by {classData.lecturer}.
+            </Text>
+          </View>
+        )}
+
+        {activeTab === 'lectures' && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Lectures</Text>
+            {mockLectures.map(l => (
+              <View key={l.id} style={styles.rowItem}>
+                <Ionicons name="play-circle" size={20} color="#3b82f6" />
+                <View style={styles.rowContent}>
+                  <Text style={styles.rowTitle}>{l.title}</Text>
+                  <Text style={styles.rowMeta}>{l.meta}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {activeTab === 'assignments' && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Assignments</Text>
+            {mockAssignments.map(a => (
+              <TouchableOpacity
+                key={a.id}
+                style={styles.card}
+                activeOpacity={0.9}
+                onPress={() => router.push({ pathname: '/assignment', params: { classId: classCode } })}
+              >
+                <View style={[styles.cardBadge, { backgroundColor: a.color + '22' }]}>
+                  <Ionicons name="document-text" size={18} color={a.color} />
+                </View>
+                <View style={styles.cardBody}>
+                  <Text style={styles.cardTitle} numberOfLines={2}>{a.title}</Text>
+                  <Text style={styles.cardMeta}>{a.status} • {a.due}</Text>
+                </View>
+                <View style={styles.cardRight}>
+                  <Text style={styles.deadline}>{a.due}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+
         <TouchableOpacity
           style={styles.actionButton}
           onPress={() => {
             if (activeTab === 'assignments') {
-              router.push('/joinQuiz');
+              router.push({ pathname: '/assignment', params: { classId: classCode } });
             } else if (activeTab === 'lectures') {
               Alert.alert('Coming Soon', 'Lecture videos will be available soon.');
             } else {
@@ -134,7 +160,7 @@ export default function ClassDetailScreen() {
           }}
         >
           <Text style={styles.actionButtonText}>
-            {activeTab === 'assignments' ? 'Join New Quiz' : 'View All'}
+            {activeTab === 'assignments' ? 'View Assignments' : 'View All'}
           </Text>
         </TouchableOpacity>
       </ScrollView>
@@ -166,6 +192,9 @@ const styles = StyleSheet.create({
   },
   header: {
     marginBottom: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   title: {
     fontSize: 22,
@@ -215,55 +244,66 @@ const styles = StyleSheet.create({
     color: '#334155',
     lineHeight: 22,
   },
-  lectureItem: {
+  rowItem: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#f1f5f9',
   },
-  lectureInfo: {
+  rowContent: {
     marginLeft: 12,
     flex: 1,
   },
-  lectureTitle: {
+  rowTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: '#1e293b',
   },
-  lectureMeta: {
+  rowMeta: {
     fontSize: 13,
     color: '#64748b',
     marginTop: 2,
   },
-  assignmentItem: {
+  card: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f1f5f9',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#eef2ff',
   },
-  assignmentStatus: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+  cardBadge: {
+    width: 44,
+    height: 44,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 3,
+    marginRight: 12,
   },
-  assignmentInfo: {
-    marginLeft: 12,
+  cardBody: {
     flex: 1,
   },
-  assignmentTitle: {
+  cardTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#1e293b',
+    fontWeight: '700',
+    color: '#0f172a',
   },
-  assignmentMeta: {
+  cardMeta: {
+    color: '#6b7280',
+    marginTop: 6,
     fontSize: 13,
-    color: '#64748b',
-    marginTop: 2,
+  },
+  cardRight: {
+    marginLeft: 12,
+    alignItems: 'flex-end',
+  },
+  deadline: {
+    fontSize: 12,
+    color: '#6b7280',
+    fontWeight: '600',
   },
   // Action Button
   actionButton: {
@@ -296,5 +336,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#6b7280',
     textAlign: 'center',
+  },
+  leaveBtn: {
+    backgroundColor: '#fff5f5',
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: '#fee2e2',
+    marginLeft: 12,
+  },
+  leaveTxt: {
+    color: '#dc2626',
+    fontWeight: '700',
   },
 });

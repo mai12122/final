@@ -14,8 +14,8 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { joinClass } from '../../lesson03/utils/storage'; 
-import { CLASS_CATALOG, findClassByCode } from '../../lesson03/constants/Data'; 
+import { joinClass } from '../utils/storage'; 
+import { CLASS_CATALOG, findClassByCode } from '../constants/Data'; 
 
 export default function JoinClassroomScreen() {
   const [classCode, setClassCode] = useState('');

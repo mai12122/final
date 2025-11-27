@@ -35,12 +35,12 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="notifications"
+        name="assignment"
         options={{
-          title: 'Notifications',
+          title: 'Assignments',
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons 
-              name={focused ? "notifications" : "notifications-outline"} 
+              name={focused ? "document" : "document-outline"} 
               size={size} 
               color={color} 
             />
@@ -60,6 +60,20 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="notifications"
+        options={{
+          title: 'Notifications',
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons 
+              name={focused ? "notifications" : "notifications-outline"} 
+              size={size} 
+              color={color} 
+            />
+          ),
+        }}
+      />
+
     </Tabs>
   );
 }

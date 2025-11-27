@@ -21,7 +21,7 @@ import {
   AlertCircle as AlertIcon,
 } from 'lucide-react-native'; 
 
-import { joinClass, joinQuiz, getJoinedClasses, getJoinedQuizzes } from '../../../lesson03/utils/storage';
+import { joinClass, joinQuiz, getJoinedClasses, getJoinedQuizzes } from '../../utils/storage';
 import AsyncStorageLib from '@react-native-async-storage/async-storage';
 
 export default function StudentHomeScreen() {
@@ -141,7 +141,7 @@ export default function StudentHomeScreen() {
             )}
 
             <View style={styles.topBar}>
-                <TouchableOpacity onPress={() => router.push('/(tabs)/profile')}>
+                <TouchableOpacity onPress={() => router.push('/profile')}>
                     <Image 
                         key={profileImage}
                         source={{ uri: profileImage }} 
@@ -164,7 +164,7 @@ export default function StudentHomeScreen() {
                 {/* 🔔 Notifications button */}
                 <TouchableOpacity 
                     style={styles.bellButton}
-                    onPress={() => router.push('/(tabs)/notifications')} 
+                    onPress={() => router.push('/notifications')} 
                 >
                     <BellIcon size={22} color="#444" strokeWidth={2} />
                 </TouchableOpacity>

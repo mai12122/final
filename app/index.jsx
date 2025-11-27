@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, ActivityIndicator } from 'react-native';
-import { useAuth } from '../../lesson03/contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { router } from 'expo-router';
 
 const Home = () => {

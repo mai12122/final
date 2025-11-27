@@ -1,4 +1,30 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Notifications from 'expo-notifications';
+
+const LOCAL_NOTIF_KEY = 'local_notifications_v1';
+
+async function pushLocalNotificationEntry(entry) {
+  try {
+    const raw = await AsyncStorage.getItem(LOCAL_NOTIF_KEY);
+    const current = raw ? JSON.parse(raw) : [];
+    const next = [entry, ...current];
+    await AsyncStorage.setItem(LOCAL_NOTIF_KEY, JSON.stringify(next));
+  } catch (e) {
+    console.warn('pushLocalNotificationEntry', e);
+  }
+}
+
+async function scheduleLocalNotification(title, body) {
+  try {
+    // schedule a quick local notification for immediate feedback
+    await Notifications.scheduleNotificationAsync({
+      content: { title, body },
+      trigger: { seconds: 1 },
+    });
+  } catch (e) {
+    console.warn('scheduleLocalNotification', e);
+  }
+}
 
 const CLASSES_KEY = '@joined_classes';
 const QUIZZES_KEY = '@joined_quizzes';
@@ -11,6 +37,10 @@ export const joinClass = async (classData) => {
 
     const updated = [classData, ...existing];
     await AsyncStorage.setItem(CLASSES_KEY, JSON.stringify(updated));
+    // create a local notification entry and schedule a quick local notification
+    const entry = { id: `class-${Date.now()}`, title: 'Joined class', body: `${classData.name}`, time: new Date().toLocaleString(), unread: true };
+    pushLocalNotificationEntry(entry);
+    scheduleLocalNotification(entry.title, `You joined ${classData.name}`);
     return true;
   } catch (error) {
     console.error('Error joining class:', error);
@@ -48,6 +78,9 @@ export const joinQuiz = async (quizData) => {
 
     const updated = [quizData, ...existing];
     await AsyncStorage.setItem(QUIZZES_KEY, JSON.stringify(updated));
+    const entry = { id: `quiz-${Date.now()}`, title: 'Joined quiz', body: `${quizData.name}`, time: new Date().toLocaleString(), unread: true };
+    pushLocalNotificationEntry(entry);
+    scheduleLocalNotification(entry.title, `You joined ${quizData.name}`);
     return true;
   } catch (error) {
     console.error('Error joining quiz:', error);

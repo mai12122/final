@@ -14,7 +14,8 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { findQuizByCode } from '../constants/Data'; 
+import { findQuizByCode } from '../constants/Data';
+import { joinQuiz } from '../utils/storage'; 
 
 export default function JoinQuizScreen() {
   const [code, setCode] = useState(['', '', '', '', '', '']);
@@ -63,32 +64,42 @@ export default function JoinQuizScreen() {
         );
         return;
       }
-      Alert.alert(
-        '✅ Success!',
-        `You’ve joined:\n"${quiz.name}"`,
-        [
-          { 
-            text: 'Start Quiz', 
-            onPress: () => {
-              router.push({
-                pathname: '/quiz',
-                params: { 
-                  quizId: quiz.id,
-                  quizCode: quiz.code,
-                  quizName: quiz.name,
-                  classCode: quiz.classCode,
+      // persist join and notify
+      try {
+        const ok = await joinQuiz(quiz);
+        if (!ok) {
+          Alert.alert('ℹ️ Already Enrolled', `You’re already in "${quiz.name}".`, [{ text: 'OK' }]);
+        } else {
+          Alert.alert(
+            '✅ Success!',
+            `You’ve joined:\n"${quiz.name}"`,
+            [
+              { 
+                text: 'Start Quiz', 
+                onPress: () => {
+                  router.push({
+                    pathname: '/quiz',
+                    params: { 
+                      quizId: quiz.id,
+                      quizCode: quiz.code,
+                      quizName: quiz.name,
+                      classCode: quiz.classCode,
+                    },
+                  });
                 },
-              });
-            },
-            style: 'default',
-          },
-          {
-            text: 'Home',
-            onPress: () => router.replace('/(tabs)/home'),
-            style: 'cancel',
-          },
-        ]
-      );
+                style: 'default',
+              },
+              {
+                text: 'Home',
+                onPress: () => router.replace('/(tabs)/home'),
+                style: 'cancel',
+              },
+            ]
+          );
+        }
+      } catch (e) {
+        console.warn('joinQuiz flow', e);
+      }
     } catch (error) {
       console.error('Join quiz error:', error);
       Alert.alert(

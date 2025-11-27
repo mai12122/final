@@ -1,12 +1,13 @@
-import{ Client, Databases, ID } from "appwrite";
-import { Account } from 'appwrite';
+import { Client, Databases, ID, Account } from 'appwrite';
 
 const client = new Client();
-export const account = new Account(client)
+
+// Configure the client first, then create service instances that use it.
 client
     .setEndpoint(process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT)
     .setProject(process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID);
 
+export const account = new Account(client);
 export const databases = new Databases(client);
 export const databaseId = process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID;
 
@@ -17,4 +18,4 @@ export const config = {
     },
 };
 
-export {ID};
+export { ID };

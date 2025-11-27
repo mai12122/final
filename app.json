@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "com.mai1212.lesson03",
+    "scheme": "com.mai1212.final",
     "projectId": "c0b8b0c0-b8b0-4b8b-b8b0-c0b8b0c0b8b0",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -29,7 +29,7 @@
       "permissions": [
         "android.permission.RECORD_AUDIO"
       ],
-      "package": "com.mai1212.lesson03"
+      "package": "com.mai1212.final"
     },
     "web": {
       "output": "static",
