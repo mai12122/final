@@ -5,11 +5,17 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "final",
+    "scheme": "com.mai1212.lesson03",
+    "projectId": "c0b8b0c0-b8b0-4b8b-b8b0-c0b8b0c0b8b0",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "Allow access to your photos to set a profile picture.",
+        "NSCameraUsageDescription": "Allow access to your camera to take a profile picture.",
+        "NSMicrophoneUsageDescription": "Allow microphone access for audio recording."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +25,11 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.mai1212.lesson03"
     },
     "web": {
       "output": "static",
@@ -37,6 +47,13 @@
           "dark": {
             "backgroundColor": "#000000"
           }
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow access to your photos to set a profile picture.",
+          "cameraPermission": "Allow access to your camera to take a profile picture."
         }
       ]
     ],
